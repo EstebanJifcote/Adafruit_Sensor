@@ -17,6 +17,14 @@
 /* Update by K. Townsend (Adafruit Industries) for lighter typedefs, and
  * extended sensor support to include color, voltage and current */
 
+/* Update by S. Heathcote (Esteban Jifcote) to extend sensor support to
+   "Voltage_Current_Power" sensors (INA219, INA260, etc) which measure all
+   three quantities quasi simultaneoulsy; also added power as a seperate
+   type since voltage and current are allready included
+   */
+
+
+
 #ifndef _ADAFRUIT_SENSOR_H
 #define _ADAFRUIT_SENSOR_H
 
@@ -67,7 +75,10 @@ typedef enum {
   SENSOR_TYPE_VOLTAGE = (15),
   SENSOR_TYPE_CURRENT = (16),
   SENSOR_TYPE_COLOR = (17),
-  SENSOR_TYPE_TVOC = (18)
+  SENSOR_TYPE_TVOC = (18),
+  SENSOR_TYPE_POWER = (19),
+  SENSOR_TYPE_PWRMTR = (20)
+
 } sensors_type_t;
 
 /** struct sensors_vec_s is used to return a vector in a common format. */
@@ -91,6 +102,11 @@ typedef struct {
                         and magnetic north, measured clockwise when viewing from
                         the top of the device. 0-359 degrees */
     };               ///< Struct for holding roll/pitch/heading
+    struct {
+      float voltage; ///< Voltage (Volts)
+      float current; ///< Current (milliamps)
+      float power; ///< Power   (milli Watts)
+    };         ///< Struct for holding VAW values
   };                 ///< Union that can hold 3D vector array, XYZ components or
                      ///< roll/pitch/heading
   int8_t status;     ///< Status byte
@@ -135,6 +151,8 @@ typedef struct {
     float relative_humidity; /**< relative humidity in percent */
     float current;           /**< current in milliamps (mA) */
     float voltage;           /**< voltage in volts (V) */
+    float power;             /**< power in milliwatts (mw) */
+    sensors_vec_t pwrmtr;    /**< voltage in volt, current in milliamps (ma) power in millwatts (mW) */
     float tvoc;              /**< Total Volatile Organic Compounds, in ppb */
     sensors_color_t color;   /**< color in RGB component values */
   };                         ///< Union for the wide ranges of data we can carry
